@@ -1,4 +1,5 @@
 var game;
+var score = 0;
 var useLandscape = false;
 
 window.onload = function() {
@@ -28,6 +29,7 @@ window.onload = function() {
 	console.log(game);
 	game.state.add("StateTitle", StateTitle);
 	game.state.add("StateMain", StateMain);
+	game.state.add("StateOver", StateOver);
 
 	game.state.start("StateTitle");
 };

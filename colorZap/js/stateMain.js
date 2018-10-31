@@ -62,6 +62,15 @@ var StateMain = {
 		//physics can only be applied to SPRITES in PHASER
 		game.physics.arcade.enable(this.ball);
 
+		//SCORE TEXT (x,y,text)
+		this.scoreText = game.add.text(game.world.centerX, 150, "0");
+		this.scoreText.fill = "#ffffff";
+		this.scoreText.fontSize = 64;
+		this.scoreText.anchor.set(0.5, 0.5);
+		this.scoreLabel = game.add.text(game.world.centerX, 100, "Score");
+		this.scoreLabel.fill = "#ffffff";
+		this.scoreText.fontSize = 32;
+		this.scoreLabel.anchor.set(0.5, 0.5);
 		console.log("ready");
 		this.setListeners();
 		this.resetBall();
@@ -117,6 +126,10 @@ var StateMain = {
 			this.ball.body.velocity.setTo(0, 0);
 			if (this.ball.frame == this.ring.frame) {
 				this.resetBall();
+				score++;
+				this.scoreText.text = score;
+			} else {
+				game.state.start("StateOver");
 			}
 		}
 	}
