@@ -10,13 +10,32 @@ var StateMain = {
 		game.load.spritesheet("rings", "images/main/rings.png", 60, 65, 5);
 
 		game.load.spritesheet("balls", "images/main/balls.png", 35, 35, 5);
+
+		//TOGGLE BUTTON
+		game.load.spritesheet(
+			"soundButtons",
+			"images/ui/soundButtons.png",
+			32,
+			32,
+			2
+		);
+		///AUDIO (KEY, PATH)
+		game.load.audio("points", "sounds/points.mp3");
+		game.load.audio("gameOver", "sounds/gameOver.mp3");
 	},
 
 	//setup objects, variables ,souds, text, good gusy, explosions
 	create: function() {
 		//vars
 		this.speed = 200;
+		this.incSpeed = 20;
+		this.maxSpeed = 450;
 		game.physics.startSystem(Phaser.Physics.Arcade);
+
+		//ADD SOUNDS TO GAME add.audio(key)
+		this.pointsSound = game.add.audio("points");
+		this.gameOverSound = game.add.audio("gameOver");
+
 		//blocks
 		var red = game.add.image(0, 0, "red");
 		var blue = game.add.image(0, 100, "blue");
@@ -71,12 +90,31 @@ var StateMain = {
 		this.scoreLabel.fill = "#ffffff";
 		this.scoreText.fontSize = 32;
 		this.scoreLabel.anchor.set(0.5, 0.5);
+
+		//SOUND BUTTON
+		this.soundButton = game.add.image(20, 20, "soundButtons");
+		this.soundButton.inputEnabled = true;
+
+		if (soundOn) {
+			this.soundButton.frame = 0;
+		} else {
+			this.soundButton.frame = 1;
+		}
 		console.log("ready");
 		this.setListeners();
 		this.resetBall();
 	},
 	setListeners: function() {
 		game.input.onUp.add(this.resetRing, this);
+		this.soundButton.events.onInputDown.add(this.toggleSound, this);
+	},
+	toggleSound: function() {
+		soundOn = !soundOn;
+		if (soundOn) {
+			this.soundButton.frame = 0;
+		} else {
+			this.soundButton.frame = 1;
+		}
 	},
 	resetBall: function() {
 		var color = game.rnd.integerInRange(0, 5);
@@ -96,6 +134,11 @@ var StateMain = {
 		);
 		console.log(rot);
 		this.ball.rotation = rot;
+
+		this.speed += this.incSpeed;
+		if (this.speed > this.maxSpeed) {
+			this.speed = this.maxSpeed;
+		}
 	},
 	changeColor: function(target) {
 		switch (target.name) {
@@ -128,7 +171,13 @@ var StateMain = {
 				this.resetBall();
 				score++;
 				this.scoreText.text = score;
+				if (soundOn) {
+					this.pointsSound.play();
+				}
 			} else {
+				if (soundOn) {
+					this.gameOverSound.play();
+				}
 				game.state.start("StateOver");
 			}
 		}

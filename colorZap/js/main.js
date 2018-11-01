@@ -1,6 +1,7 @@
 var game;
 var score = 0;
 var useLandscape = false;
+var soundOn = true;
 
 window.onload = function() {
 	var isMobile = navigator.userAgent.indexOf("Mobile");
